@@ -1,0 +1,22 @@
+@{
+    Layout = "_Layout";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's Mail</p>
+<div id="bigpic"></div>
+<script>
+    	$.ajax({
+		url:'/Mail/ShowMessag',
+		type:'GET',
+		dataType:'Json',
+		contentType:"application/json",
+		success:function(data, textStatus){
+			console.log(data);
+			$("#bigpic").html(data);
+		},
+		error:function(){
+			console.log("请求失败!");
+		}
+	});
+</script>
