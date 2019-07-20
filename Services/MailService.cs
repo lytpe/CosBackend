@@ -54,5 +54,25 @@ namespace Cos.Services
             }
             return result; 
         } 
+        public static BaseResultModel<Message> DeleteMessages(string Id){
+            int id=Int32.Parse(Id);
+            BaseResultModel<Message> result=new BaseResultModel<Message>();
+            try{
+                using(CDBContext _cDBContext=new CDBContext()){
+                    Message ms=new Message();
+                    ms=_cDBContext.Me.FirstOrDefault(p=>p.Id==id);
+                    _cDBContext.Remove(ms);
+                    _cDBContext.SaveChanges();
+                    result.status = 1;
+                    result.Data=null;
+                    result.message = "邮件删除成功！";
+                }
+            }catch(Exception ex){
+               result.status=0;
+               result.Data=null;
+               result.message=ex.ToString();
+            }
+            return result; 
+        }
     }
 }

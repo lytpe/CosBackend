@@ -28,4 +28,4 @@ F:\Cos\obj\Debug\netcoreapp2.2\Cos.Views.pdb
 F:\Cos\obj\Debug\netcoreapp2.2\Cos.dll
 F:\Cos\obj\Debug\netcoreapp2.2\Cos.pdb
 F:\Cos\obj\Debug\netcoreapp2.2\Cos.csproj.CopyComplete
-F:\Cos\obj\Debug\netcoreapp2.2\Razor\Views\Mail\ShowMessage.g.cshtml.cs
+f:\Cos\obj\Debug\netcoreapp2.2\Razor\Views\Mail\ShowMessages.g.cshtml.cs

@@ -8,27 +8,23 @@ using Cos.Models;
 using Cos.Services;
 using Cos.Models.RichAndArticles;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 namespace Cos.Controllers
 {
     public class ArticlesController:Controller
     {
+         private IHostingEnvironment _env;
+        public ArticlesController(IHostingEnvironment env){
+            _env=env;
+        }
         //获取首页文章列表
-        public JsonResult GetArticlesList(string type){
+        public JsonResult GetArticlesList(){
             BaseResultModel<List<Article>> alist=new BaseResultModel<List<Article>>();
-            alist=RichArticleService.GetArticleList(type);
+            alist=RichArticleService.GetArticleList();
             return Json(alist);
         }
-        //获取富文本，该部分富文本包括大图和说明
-        public JsonResult GetRich(string type){
-            BaseResultModel<SimpleArticle> sa=RichArticleService.GetRichArticle(type);
-            return Json(sa);
-        }
-        //获取富文本中 介绍列表
-        public  JsonResult GetRichList(string type){
-            BaseResultModel<List<SimpleArticle>> salist=RichArticleService.GetRichList(type);
-            return Json(salist);
-        }
-
         //用于添加文章
         [HttpPost]
         public JsonResult AddArticle(Article a)
@@ -43,19 +39,29 @@ namespace Cos.Controllers
            BaseResultModel<Article> article=RichArticleService.UpdateArticle(a);
            return Json(article);
         }
-        //用于添加富文本
+         //用于上传多个图片
         [HttpPost]
-        public JsonResult AddRichArticle(SimpleArticle a)
-        {
-           BaseResultModel<SimpleArticle> article=RichArticleService.SetRichArticle(a);
-           return Json(article);
-        }
-        //用于修改富文本
-        [HttpPost]
-        public JsonResult UpdateRichArticle(SimpleArticle a)
-        {
-           BaseResultModel<SimpleArticle> article=RichArticleService.UpdateRichArticle(a);
-           return Json(article);
+        public  JsonResult AddPicList(List<IFormFile> files){
+            var filelist = Request.Form.Files;
+            long size = filelist.Sum(f => f.Length);
+            string webRootPath = _env.WebRootPath;
+            string contentRootPath = _env.ContentRootPath;
+            foreach (var formFile in filelist)
+            {
+                if (formFile.Length > 0)
+                {
+                    //string fileExt = GetFileExt(formFile.FileName); //文件扩展名，不含“.”
+                    long fileSize = formFile.Length; //获得文件大小，以字节为单位
+                
+                    //string newFileName = System.Guid.NewGuid().ToString() + ".jpg"; //随机生成新的文件名
+                    var filePath = webRootPath +"/images/" +formFile.FileName;
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                         formFile.CopyToAsync(stream);
+                    }
+                }
+            }
+            return Json(new { count = filelist.Count, size });
         }
     }
 }

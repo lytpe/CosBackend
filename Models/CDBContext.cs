@@ -6,7 +6,7 @@ using Cos.Models.RichAndArticles;
 using Cos.Models.ScrollPictures;
 namespace Cos.Models
 {
-        public class CDBContext:DbContext
+        public class CDBContext:IdentityDbContext<User>
         {  
             //  public CDBContext(){}
             // public CDBContext(DbContextOptions<CDBContext> options) : base(options)

@@ -35,6 +35,7 @@ namespace Cos.Services
             }
             return result;
         }
+        //一次添加多个轮播图
         public static BaseResultModel<List<ScrollPicture>> AddScrollPicList(List<ScrollPicture> sp){
             BaseResultModel<List<ScrollPicture>> result=new BaseResultModel<List<ScrollPicture>>();
             try{
@@ -69,6 +70,26 @@ namespace Cos.Services
                     result.status=1;
                     result.Data=sps;
                     result.message="获取轮播图添加成功";
+                }
+            }catch(Exception ex){
+               result.status=0;
+               result.Data=null;
+               result.message=ex.ToString();
+            }
+            return result;
+        }
+        public static BaseResultModel<ScrollPicture> DeleteScrollPic(string Id){
+            int id=Int32.Parse(Id);
+            BaseResultModel<ScrollPicture> result=new BaseResultModel<ScrollPicture>();
+            try{
+                using(CDBContext _cDBContext=new CDBContext()){
+                    ScrollPicture sps=new ScrollPicture();
+                    sps=_cDBContext.Sc.FirstOrDefault(p=>p.Id==id);
+                    _cDBContext.Remove(sps);
+                    _cDBContext.SaveChanges();
+                    result.status=1;
+                    result.Data=null;
+                    result.message="删除轮播图添加成功";
                 }
             }catch(Exception ex){
                result.status=0;

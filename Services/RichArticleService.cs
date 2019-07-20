@@ -9,12 +9,12 @@ namespace Cos.Services
     public class RichArticleService
     {
         //根据不同页面获取文章类型
-        public static BaseResultModel<List<Article>> GetArticleList(string type)
+        public static BaseResultModel<List<Article>> GetArticleList()
         {
            BaseResultModel<List<Article>> result=new BaseResultModel<List<Article>>();
            try{
                using(CDBContext _cDBContext=new CDBContext()){
-                    List<Article> messages=_cDBContext.Ar.Where(p=>p.type.Equals(type)).ToList();
+                    List<Article> messages=_cDBContext.Ar.ToList();
                     result.status = 1;
                     result.Data = messages;
                }
@@ -46,12 +46,12 @@ namespace Cos.Services
             return result;
         }
         //用于获取页面富文本列表
-        public static BaseResultModel<List<SimpleArticle>> GetRichList(string type){
+        public static BaseResultModel<List<SimpleArticle>> GetRichList(){
             BaseResultModel<List<SimpleArticle>> result=new BaseResultModel<List<SimpleArticle>>();
             try{
                 using(CDBContext _cDBContext=new CDBContext()){
                     List<SimpleArticle> s=new List<SimpleArticle>();
-                    s=_cDBContext.Si.Where(p=>p.type.Equals(type)).ToList();
+                    s=_cDBContext.Si.ToList();
                     result.status = 1;
                     result.Data = s;
                     result.message = "获取数据成功！";
@@ -100,8 +100,7 @@ namespace Cos.Services
                     a.UserName=article.UserName;
                     a.type=article.type;
                     a.ArticleContext=article.ArticleContext;
-                    a.ArticleCreateDate=article.ArticleCreateDate;
-                    a.ArticleImgUrl=article.ArticleImgUrl;
+
                     a.ArticleSideName=article.ArticleSideName;
                     a.ArticleUpdateDate=article.ArticleUpdateDate;
                     a.ArticleName=article.ArticleName;
@@ -156,12 +155,9 @@ namespace Cos.Services
                     a.UserName=simpleArticle.UserName;
                     a.type=simpleArticle.type;
                     a.ArticleContext=simpleArticle.ArticleContext;
-                    a.ArticleCreateDate=simpleArticle.ArticleCreateDate;
-                    a.ArticleImgUrl=simpleArticle.ArticleImgUrl;
                     a.ArticleUpdateDate=simpleArticle.ArticleUpdateDate;
                     _cDBContext.Si.Update(a);
                     _cDBContext.SaveChanges();
-
                     result.status = 1;
                     result.Data = null;
                     result.message = "更新文章成功！";

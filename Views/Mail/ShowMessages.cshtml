@@ -13,7 +13,7 @@
 		contentType:"application/json",
 		success:function(data, textStatus){
 			console.log(data);
-			$("#bigpic").html(data);
+			$("#bigpic").text(data.data[0].phone);
 		},
 		error:function(){
 			console.log("请求失败!");
