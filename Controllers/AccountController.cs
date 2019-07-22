@@ -23,7 +23,6 @@ namespace Cos.Controllers
             _userManager=userManager;
         }
         
-        [HttpPost]
         public async Task<JsonResult> Logout(){
             await _signManager.SignOutAsync();
             BaseResultModel<string> resultModel=new BaseResultModel<string>();
@@ -37,9 +36,17 @@ namespace Cos.Controllers
         public async Task<JsonResult> Login(LoginModel loginmodel){
             var result=await _signManager.PasswordSignInAsync(loginmodel.username,loginmodel.password,false,false);
             if(result.Succeeded){
-                return "";
+                 BaseResultModel<string> resultModel=new BaseResultModel<string>();
+                 resultModel.status=1;
+                 resultModel.message="登录成功";
+                 resultModel.Data=loginmodel.username;
+                 return Json(resultModel);
             }else{
-                return "";
+                 BaseResultModel<string> resultModel=new BaseResultModel<string>();
+                 resultModel.status=0;
+                 resultModel.message="登录失败,用户或密码错误";
+                 resultModel.Data=null;
+                 return Json(resultModel);
             }
 
         }
@@ -51,10 +58,18 @@ namespace Cos.Controllers
             var result=await _userManager.CreateAsync(user,register.password);
             if(result.Succeeded){
                 await _signManager.SignInAsync(user,false);
-                return "";
+                 BaseResultModel<string> resultModel=new BaseResultModel<string>();
+                 resultModel.status=1;
+                 resultModel.message="注册成功";
+                 resultModel.Data=register.username;
+                 return Json(resultModel);
             }
             else{
-                return "";
+                 BaseResultModel<string> resultModel=new BaseResultModel<string>();
+                 resultModel.status=0;
+                 resultModel.message="注册失败";
+                 resultModel.Data=null;
+                 return Json(resultModel);
             }
         }
     

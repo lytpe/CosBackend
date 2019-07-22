@@ -3,14 +3,16 @@ using System;
 using Cos.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Cos.Migrations
 {
     [DbContext(typeof(CDBContext))]
-    partial class CDBContextModelSnapshot : ModelSnapshot
+    [Migration("20190722023601_second")]
+    partial class second
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
