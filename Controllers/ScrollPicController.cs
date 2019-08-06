@@ -21,10 +21,11 @@ namespace Cos.Controllers
         public ScrollPicController(IHostingEnvironment env){
             _env=env;
         }
-        //获取轮播图信息
-        public JsonResult GetPics()
+        //获取轮播图列表信息
+        [HttpPost]
+        public JsonResult GetPics(PaginationModel pageList)
         {
-            BaseResultModel<List<ScrollPicture>> sps=ScrollPicService.GetPicList();
+            PaginationResultModel<ScrollPicture> sps=ScrollPicService.GetPicList(pageList);
             return Json(sps);
         }
         //添加单个轮播图
@@ -39,8 +40,7 @@ namespace Cos.Controllers
         [HttpPost]
         public  JsonResult AddPicList(string data)
         {
-            List<ScrollPicture> sps= (List<ScrollPicture>)JsonConvert.DeserializeObject(data);
-
+            List<ScrollPicture>  sps= JsonConvert.DeserializeObject<List<ScrollPicture>>(data);
             BaseResultModel<List<ScrollPicture>> sp=ScrollPicService.AddScrollPicList(sps);
             return Json(sp);
         }
@@ -64,7 +64,10 @@ namespace Cos.Controllers
                     //string fileExt = GetFileExt(formFile.FileName); //文件扩展名，不含“.”
                     long fileSize = formFile.Length; //获得文件大小，以字节为单位
                     //string newFileName = System.Guid.NewGuid().ToString() + ".jpg"; //随机生成新的文件名
-                    var filePath = webRootPath +"/images/" + formFile.FileName;
+                    string url=Request.Host.Value;
+
+                    var filePath="http://"+url+"/images/" +formFile.FileName;
+                    //var filePath = webRootPath +"/images/" + formFile.FileName;
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                          formFile.CopyToAsync(stream);

@@ -8,17 +8,53 @@ namespace Cos.Services
 {
     public class RichArticleService
     {
-        //根据不同页面获取文章类型
-        public static BaseResultModel<List<Article>> GetArticleList()
+        //后台获取文章类型
+        public static PaginationResultModel<Article> GetArticleList(PaginationModel pageList)
         {
-           BaseResultModel<List<Article>> result=new BaseResultModel<List<Article>>();
+           PaginationResultModel<Article> result=new PaginationResultModel<Article>();
            try{
                using(CDBContext _cDBContext=new CDBContext()){
-                    List<Article> messages=_cDBContext.Ar.ToList();
+                    List<Article> messages=_cDBContext.Ar.Skip((pageList.Index-1)*pageList.Size).Take(pageList.Size).ToList();
+                    result.Total=_cDBContext.Ar.Count();
                     result.status = 1;
                     result.Data = messages;
+                    result.message = "获取数据成功！";
                }
-            result.message = "获取数据成功！";
+           }catch(Exception ex){
+               result.status=0;
+               result.Data=null;
+               result.message=ex.ToString();
+               result.Total=0;
+           }
+            return result; 
+        }
+        //前台根据页面获取文章列表
+        public static BaseResultModel<List<Article>> GetFrontArticleList(string type){
+            BaseResultModel<List<Article>> result=new BaseResultModel<List<Article>>();
+            try{
+               using(CDBContext _cDBContext=new CDBContext()){
+                    List<Article> messages=_cDBContext.Ar.Where(p=>p.type==type).Take(3).ToList();
+                    result.status = 1;
+                    result.Data = messages;
+                    result.message = "获取数据成功！";
+               }
+           }catch(Exception ex){
+               result.status=0;
+               result.Data=null;
+               result.message=ex.ToString();
+           }
+            return result; 
+        }
+        //前台根据页面获取页面左下角图文
+        public static BaseResultModel<Article> GetFrontArticle(string type){
+             BaseResultModel<Article> result=new BaseResultModel<Article>();
+              try{
+               using(CDBContext _cDBContext=new CDBContext()){
+                    Article messages=_cDBContext.Ar.FirstOrDefault(p=>p.type==type);
+                    result.status = 1;
+                    result.Data = messages;
+                    result.message = "获取数据成功！";
+               }
            }catch(Exception ex){
                result.status=0;
                result.Data=null;
@@ -27,15 +63,13 @@ namespace Cos.Services
             return result; 
         }
         //用于获取不同页面中富文本介绍
-        public static BaseResultModel<SimpleArticle> GetRichArticle(string type)
+        public static BaseResultModel<List<SimpleArticle>> GetFrontRichList(string type)
         {
-            BaseResultModel<SimpleArticle> result=new BaseResultModel<SimpleArticle>();
+            BaseResultModel<List<SimpleArticle>> result=new BaseResultModel<List<SimpleArticle>>();
             try{
                 using(CDBContext _cDBContext=new CDBContext()){
-                        SimpleArticle s=new SimpleArticle();
-                        s=_cDBContext.Si.FirstOrDefault(p=>p.type.Equals(type));
                         result.status = 1;
-                        result.Data = s;
+                        result.Data = _cDBContext.Si.Where(p=>p.type.Equals(type)).Take(3).ToList();
                         result.message = "获取数据成功！";
                 }
             }catch(Exception ex){
@@ -46,20 +80,23 @@ namespace Cos.Services
             return result;
         }
         //用于获取页面富文本列表
-        public static BaseResultModel<List<SimpleArticle>> GetRichList(){
-            BaseResultModel<List<SimpleArticle>> result=new BaseResultModel<List<SimpleArticle>>();
+        public static PaginationResultModel<SimpleArticle> GetRichList(PaginationModel pageList){
+            PaginationResultModel<SimpleArticle> result=new PaginationResultModel<SimpleArticle>();
             try{
                 using(CDBContext _cDBContext=new CDBContext()){
                     List<SimpleArticle> s=new List<SimpleArticle>();
-                    s=_cDBContext.Si.ToList();
+                    s=_cDBContext.Si.Skip((pageList.Index-1)*pageList.Size).Take(pageList.Size).ToList();
+                    result.Total=_cDBContext.Si.Count();
                     result.status = 1;
                     result.Data = s;
                     result.message = "获取数据成功！";
+                    
                 }
             }catch(Exception ex){
                result.status=0;
                result.Data=null;
                result.message=ex.ToString();
+               result.Total=0;
            }
             return result;
         }

@@ -13,12 +13,13 @@ namespace Cos.Services
         //    _cDBContext=CDBContext;
         // }
         //展示邮件列表
-       public static BaseResultModel<List<Message>> GetMailList(){
-            BaseResultModel<List<Message>> result=new BaseResultModel<List<Message>>();
+       public static PaginationResultModel<Message> GetMailList(PaginationModel pageList){
+            PaginationResultModel<Message> result=new PaginationResultModel<Message>();
             try{
                 using(CDBContext cb=new CDBContext()){
                     List<Message> mss=new List<Message>();
-                    mss=cb.Me.ToList();
+                    mss=cb.Me.Skip((pageList.Index-1)*pageList.Size).Take(pageList.Size).ToList();
+                    result.Total=cb.Me.Count();
                     result.status = 1;
                     result.Data =mss;
                     result.message = "获取数据成功！";
@@ -27,6 +28,7 @@ namespace Cos.Services
                result.status=0;
                result.Data=null;
                result.message=ex.ToString();
+               result.Total=0;
             }
             return result;
         }

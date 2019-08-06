@@ -17,9 +17,9 @@ namespace Cos.Controllers
             return View();
         }
         //后台请求 展示网站邮件信息
-        [HttpGet]
-        public JsonResult ShowMessageList(){
-           BaseResultModel<List<Message>> result=MailService.GetMailList();
+        [HttpPost]
+        public JsonResult ShowMessageList(PaginationModel pageList){
+           PaginationResultModel<Message> result=MailService.GetMailList(pageList);
            return Json(result);
         }
         //前台请求 添加顾客邮件

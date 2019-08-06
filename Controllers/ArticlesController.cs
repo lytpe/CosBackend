@@ -19,10 +19,25 @@ namespace Cos.Controllers
         public ArticlesController(IHostingEnvironment env){
             _env=env;
         }
-        //获取首页文章列表
-        public JsonResult GetArticlesList(){
-            BaseResultModel<List<Article>> alist=new BaseResultModel<List<Article>>();
-            alist=RichArticleService.GetArticleList();
+        //后台获取首页文章列表
+        [HttpPost]
+        public JsonResult GetArticlesList(PaginationModel pageList){
+            PaginationResultModel<Article> alist=new PaginationResultModel<Article>();
+            alist=RichArticleService.GetArticleList(pageList);
+            return Json(alist);
+        }
+        //前台根据不同页面获取文章列表
+        [HttpPost]
+        public JsonResult GetArticleList(string type){
+              BaseResultModel<List<Article>> alist=new BaseResultModel<List<Article>>();
+              alist=RichArticleService.GetFrontArticleList(type);
+              return Json(alist);
+        }
+        //前台根据页面获取左下角文章
+        [HttpPost]
+        public JsonResult GetRichArticle(string type){
+            BaseResultModel<Article> alist=new BaseResultModel<Article>();
+            alist=RichArticleService.GetFrontArticle(type);
             return Json(alist);
         }
         //用于添加文章
@@ -54,7 +69,10 @@ namespace Cos.Controllers
                     long fileSize = formFile.Length; //获得文件大小，以字节为单位
                 
                     //string newFileName = System.Guid.NewGuid().ToString() + ".jpg"; //随机生成新的文件名
-                    var filePath = webRootPath +"/images/" +formFile.FileName;
+
+                    string url=Request.Host.Value;
+                    var filePath="http://"+url+"/images/" +formFile.FileName;
+                    //var filePath = webRootPath +"/images/" +formFile.FileName;
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                          formFile.CopyToAsync(stream);

@@ -40,15 +40,15 @@ namespace Cos.Services
             BaseResultModel<List<ScrollPicture>> result=new BaseResultModel<List<ScrollPicture>>();
             try{
                 using(CDBContext _cDBContext=new CDBContext()){
-                    ScrollPicture scrollpicture=new ScrollPicture();
                     for(int i=0;i<sp.Count;i++)
                     {
+                        ScrollPicture scrollpicture=new ScrollPicture();
                         scrollpicture.PicName=sp[i].PicName;
                         scrollpicture.ImgUrl=sp[i].ImgUrl;
                         scrollpicture.ImgSubmitDate=sp[i].ImgSubmitDate;
                         scrollpicture.UserName=sp[i].UserName;
+                        _cDBContext.Sc.Add(scrollpicture);
                     }
-                    _cDBContext.Sc.AddRange(scrollpicture);
                     _cDBContext.SaveChanges();
                     result.status=1;
                     result.Data=null;
@@ -61,12 +61,13 @@ namespace Cos.Services
             }
             return result;
         }
-        public static BaseResultModel<List<ScrollPicture>> GetPicList(){
-            BaseResultModel<List<ScrollPicture>> result=new BaseResultModel<List<ScrollPicture>>();
+        public static  PaginationResultModel<ScrollPicture> GetPicList(PaginationModel pageList){
+             PaginationResultModel<ScrollPicture> result=new  PaginationResultModel<ScrollPicture>();
             try{
                 using(CDBContext _cDBContext=new CDBContext()){
                     List<ScrollPicture> sps=new List<ScrollPicture>();
-                    sps=_cDBContext.Sc.ToList();
+                    sps=_cDBContext.Sc.Skip((pageList.Index-1)*pageList.Size).Take(pageList.Size).ToList();
+                    result.Total=_cDBContext.Sc.Count();
                     result.status=1;
                     result.Data=sps;
                     result.message="获取轮播图添加成功";
@@ -75,6 +76,7 @@ namespace Cos.Services
                result.status=0;
                result.Data=null;
                result.message=ex.ToString();
+               result.Total=0;
             }
             return result;
         }
